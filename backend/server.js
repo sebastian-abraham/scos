@@ -37,7 +37,10 @@ app.use("/v1/users", require("./routes/users.js"));
 app.use("/v1/auth", require("./routes/auth.js"));
 
 // Execute schema.sql on server start
-executeSchemaSQL();
+if (process.env.RENDER) {
+
+  executeSchemaSQL();
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
