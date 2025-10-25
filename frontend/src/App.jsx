@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import LoginPage from "./LoginPage";
-import ProtectedRoute from "./ProtectedRoute";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./config/ProtectedRoute";
 
 function App() {
   return (
