@@ -1,8 +1,8 @@
 // Find a panel user by their Firebase admin UID (for authentication)
-const findPanelUserByAdminId = async (adminId) => {
+const findPanelUserByFbId = async (fbId) => {
   const { rows } = await db.query(
-    "SELECT * FROM panel_users WHERE admin_id = $1 LIMIT 1",
-    [adminId]
+    "SELECT * FROM panel_users WHERE fb_id = $1 LIMIT 1",
+    [fbId]
   );
   return rows[0];
 };
