@@ -1,5 +1,5 @@
 const admin = require("../config/firebase");
-const { findPanelUserByFbId } = require("../queries/userQueries");
+const { findUserByUuid } = require("../queries/userQueries");
 
 /**
  * Middleware factory to authenticate Firebase users via ID token and verify admin access/role(s)
@@ -22,7 +22,7 @@ const authenticateUser = (userRoles = []) => async (req, res, next) => {
     }
 
     // Check if the user exists in PostgreSQL (via query abstraction)
-    const user = await findPanelUserByFbId(decodedToken.uid);
+    const user = await findUserByUuid(decodedToken.uid);
 
     if (!user) {
       return res.status(403).json({ error: "Access Denied: User not found or not allowed" });
