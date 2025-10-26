@@ -32,7 +32,6 @@ function App() {
             path="/manager"
             element={
               <ProtectedRoute requiredRole="manager">
-                <Dashboard />
                 {/* Or <ManagerDashboard /> if you have a separate component */}
               </ProtectedRoute>
             }
