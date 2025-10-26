@@ -15,9 +15,24 @@ const ManageUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddUser, setShowAddUser] = useState(false);
+  const [addUserForm, setAddUserForm] = useState({
+    fullname: "",
+    email: "",
+    role: "Student",
+  });
+  const [addUserLoading, setAddUserLoading] = useState(false);
+  const [addUserError, setAddUserError] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [activeTab, setActiveTab] = useState("Shopkeeper");
+  const [showEditUser, setShowEditUser] = useState(false);
+  const [editUserForm, setEditUserForm] = useState({
+    fullname: "",
+    email: "",
+    role: "Student",
+  });
+  const [editUserLoading, setEditUserLoading] = useState(false);
+  const [editUserError, setEditUserError] = useState("");
+  const [activeTab, setActiveTab] = useState("Student");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -42,12 +57,138 @@ const ManageUsers = () => {
     if (!authLoading) fetchUsers();
   }, [user, authLoading]);
 
-  const handleAddUser = () => setShowAddUser(true);
-  const closeAddUser = () => setShowAddUser(false);
+  const handleAddUser = () => {
+    setAddUserForm({
+      fullname: "",
+      email: "",
+      role: "Student",
+    });
+    setAddUserError("");
+    setShowAddUser(true);
+  };
+  const closeAddUser = () => {
+    setShowAddUser(false);
+    setAddUserError("");
+  };
+
+  // Handle Add User form input
+  const handleAddUserInput = (e) => {
+    const { name, value } = e.target;
+    setAddUserForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle Add User form submit
+  const handleAddUserSubmit = async (e) => {
+    e.preventDefault();
+    setAddUserLoading(true);
+    setAddUserError("");
+    try {
+      // Split fullname into firstname and lastname
+      const { fullname, email, role } = addUserForm;
+      let firstname = "";
+      let lastname = "";
+      if (fullname.trim().includes(" ")) {
+        const parts = fullname.trim().split(" ");
+        firstname = parts[0];
+        lastname = parts.slice(1).join(" ");
+      } else {
+        firstname = fullname.trim();
+        lastname = "";
+      }
+      const body = { firstname, lastname, email, role: role.toLowerCase() };
+      const headers = await getAuthHeaders();
+      headers["Content-Type"] = "application/json";
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/v1/users`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Failed to add user");
+      }
+      const newUser = await res.json();
+      setUsers((prev) => [...prev, newUser]);
+      closeAddUser();
+    } catch (err) {
+      setAddUserError(err.message || "Error adding user");
+    } finally {
+      setAddUserLoading(false);
+    }
+  };
 
   const handleDelete = (user) => {
     setSelectedUser(user);
     setShowModal(true);
+  };
+
+  // Handle Edit User
+  const handleEdit = (user) => {
+    setSelectedUser(user);
+    setEditUserForm({
+      fullname: (
+        (user.firstname || "") + (user.lastname ? " " + user.lastname : "")
+      ).trim(),
+      email: user.email || "",
+      role: user.role
+        ? user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()
+        : "Student",
+    });
+    setEditUserError("");
+    setShowEditUser(true);
+  };
+  const closeEditUser = () => {
+    setShowEditUser(false);
+    setEditUserError("");
+    setSelectedUser(null);
+  };
+  const handleEditUserInput = (e) => {
+    const { name, value } = e.target;
+    setEditUserForm((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleEditUserSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedUser) return;
+    setEditUserLoading(true);
+    setEditUserError("");
+    try {
+      // Split fullname
+      const { fullname, email, role } = editUserForm;
+      let firstname = "";
+      let lastname = "";
+      if (fullname.trim().includes(" ")) {
+        const parts = fullname.trim().split(" ");
+        firstname = parts[0];
+        lastname = parts.slice(1).join(" ");
+      } else {
+        firstname = fullname.trim();
+        lastname = "";
+      }
+      const body = { firstname, lastname, email, role: role.toLowerCase() };
+      const headers = await getAuthHeaders();
+      headers["Content-Type"] = "application/json";
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/v1/users/${selectedUser.id}`,
+        {
+          method: "PUT",
+          headers,
+          body: JSON.stringify(body),
+        }
+      );
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Failed to update user");
+      }
+      const updatedUser = await res.json();
+      setUsers((prev) =>
+        prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+      );
+      closeEditUser();
+    } catch (err) {
+      setEditUserError(err.message || "Error updating user");
+    } finally {
+      setEditUserLoading(false);
+    }
   };
 
   const closeModal = () => {
@@ -192,8 +333,18 @@ const ManageUsers = () => {
                     <div className="flex items-center gap-4">
                       <img
                         className="h-16 w-16 rounded-full object-cover"
-                        src={user.imageurl}
-                        alt={user.name}
+                        src={
+                          user.imageurl && user.imageurl.trim()
+                            ? user.imageurl
+                            : "https://ui-avatars.com/api/?name=" +
+                              encodeURIComponent(
+                                (user.firstname || "") +
+                                  " " +
+                                  (user.lastname || "")
+                              ) +
+                              "&background=random"
+                        }
+                        alt={user.firstname + " " + user.lastname}
                       />
                       <div className="flex-1">
                         <h3 className="font-bold text-base text-[#212529] dark:text-white">
@@ -215,7 +366,10 @@ const ManageUsers = () => {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-4 justify-start">
-                      <button className="flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/20 dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/30">
+                      <button
+                        className="flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/20 dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/30"
+                        onClick={() => handleEdit(user)}
+                      >
                         <span className="material-symbols-outlined text-base">
                           edit
                         </span>
@@ -231,6 +385,108 @@ const ManageUsers = () => {
                         Delete
                       </button>
                     </div>
+                    {/* Edit User Modal */}
+                    {showEditUser && (
+                      <div
+                        className="fixed inset-0 z-50 bg-background-light dark:bg-background-dark flex flex-col"
+                        id="edit-user-page"
+                      >
+                        <header className="sticky top-0 z-20 w-full bg-background-light dark:bg-background-dark/80 backdrop-blur-sm">
+                          <div className="flex items-center p-4 justify-between">
+                            <div className="text-[#212529] dark:text-white flex size-12 shrink-0 items-center justify-center">
+                              <span
+                                className="material-symbols-outlined text-2xl"
+                                onClick={closeEditUser}
+                                style={{ cursor: "pointer" }}
+                              >
+                                arrow_back
+                              </span>
+                            </div>
+                            <h1 className="text-[#212529] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
+                              Edit User
+                            </h1>
+                            <div className="flex size-12 shrink-0 items-center"></div>
+                          </div>
+                        </header>
+                        <main className="flex-grow p-4 space-y-6">
+                          <form
+                            className="space-y-6"
+                            onSubmit={handleEditUserSubmit}
+                          >
+                            <div className="space-y-2">
+                              <label
+                                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                htmlFor="email-edit"
+                              >
+                                Email
+                              </label>
+                              <input
+                                className="form-input block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white placeholder:text-gray-400 focus:border-primary focus:ring-primary"
+                                id="email-edit"
+                                name="email"
+                                placeholder="Enter user's email"
+                                type="email"
+                                value={editUserForm.email}
+                                onChange={handleEditUserInput}
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                htmlFor="fullname-edit"
+                              >
+                                Full Name
+                              </label>
+                              <input
+                                className="form-input block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white placeholder:text-gray-400 focus:border-primary focus:ring-primary"
+                                id="fullname-edit"
+                                name="fullname"
+                                placeholder="Enter user's full name"
+                                type="text"
+                                value={editUserForm.fullname}
+                                onChange={handleEditUserInput}
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <label
+                                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                htmlFor="role-edit"
+                              >
+                                Role
+                              </label>
+                              <select
+                                className="form-select block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white focus:border-primary focus:ring-primary"
+                                id="role-edit"
+                                name="role"
+                                value={editUserForm.role}
+                                onChange={handleEditUserInput}
+                                required
+                              >
+                                <option value="Student">Student</option>
+                                <option value="Shopkeeper">Shopkeeper</option>
+                                <option value="Manager">Manager</option>
+                              </select>
+                            </div>
+                            {editUserError && (
+                              <div className="text-red-500 text-sm text-center">
+                                {editUserError}
+                              </div>
+                            )}
+                            <div className="pt-4">
+                              <button
+                                className="w-full rounded-lg bg-primary px-4 py-3 text-base font-bold text-white shadow-sm hover:bg-primary/90 disabled:opacity-60"
+                                type="submit"
+                                disabled={editUserLoading}
+                              >
+                                {editUserLoading ? "Saving..." : "Save Changes"}
+                              </button>
+                            </div>
+                          </form>
+                        </main>
+                      </div>
+                    )}
                   </div>
                 ))
               )}
@@ -264,55 +520,78 @@ const ManageUsers = () => {
             </div>
           </header>
           <main className="flex-grow p-4 space-y-6">
-            <div className="space-y-2">
-              <label
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                htmlFor="email"
-              >
-                Email
-              </label>
-              <input
-                className="form-input block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white placeholder:text-gray-400 focus:border-primary focus:ring-primary"
-                id="email"
-                placeholder="Enter user's email"
-                type="email"
-              />
-            </div>
-            <div className="space-y-2">
-              <label
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                htmlFor="name"
-              >
-                Full Name
-              </label>
-              <input
-                className="form-input block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white placeholder:text-gray-400 focus:border-primary focus:ring-primary"
-                id="name"
-                placeholder="Enter user's full name"
-                type="text"
-              />
-            </div>
-            <div className="space-y-2">
-              <label
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
-                htmlFor="role"
-              >
-                Role
-              </label>
-              <select
-                className="form-select block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white focus:border-primary focus:ring-primary"
-                id="role"
-              >
-                <option>Shopkeeper</option>
-                <option>Student</option>
-                <option>Manager</option>
-              </select>
-            </div>
-            <div className="pt-4">
-              <button className="w-full rounded-lg bg-primary px-4 py-3 text-base font-bold text-white shadow-sm hover:bg-primary/90">
-                Add User
-              </button>
-            </div>
+            <form className="space-y-6" onSubmit={handleAddUserSubmit}>
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <input
+                  className="form-input block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white placeholder:text-gray-400 focus:border-primary focus:ring-primary"
+                  id="email"
+                  name="email"
+                  placeholder="Enter user's email"
+                  type="email"
+                  value={addUserForm.email}
+                  onChange={handleAddUserInput}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  htmlFor="fullname"
+                >
+                  Full Name
+                </label>
+                <input
+                  className="form-input block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white placeholder:text-gray-400 focus:border-primary focus:ring-primary"
+                  id="fullname"
+                  name="fullname"
+                  placeholder="Enter user's full name"
+                  type="text"
+                  value={addUserForm.fullname}
+                  onChange={handleAddUserInput}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  htmlFor="role"
+                >
+                  Role
+                </label>
+                <select
+                  className="form-select block w-full rounded-lg border-[#DEE2E6] dark:border-gray-700 bg-white dark:bg-gray-800 text-[#212529] dark:text-white focus:border-primary focus:ring-primary"
+                  id="role"
+                  name="role"
+                  value={addUserForm.role}
+                  onChange={handleAddUserInput}
+                  required
+                >
+                  <option value="Student">Student</option>
+                  <option value="Shopkeeper">Shopkeeper</option>
+                  <option value="Manager">Manager</option>
+                </select>
+              </div>
+              {addUserError && (
+                <div className="text-red-500 text-sm text-center">
+                  {addUserError}
+                </div>
+              )}
+              <div className="pt-4">
+                <button
+                  className="w-full rounded-lg bg-primary px-4 py-3 text-base font-bold text-white shadow-sm hover:bg-primary/90 disabled:opacity-60"
+                  type="submit"
+                  disabled={addUserLoading}
+                >
+                  {addUserLoading ? "Adding..." : "Add User"}
+                </button>
+              </div>
+            </form>
           </main>
         </div>
       )}

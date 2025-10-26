@@ -35,10 +35,10 @@ app.get("/", (req, res) => {
 // All routes in 'userRoutes' will be prefixed with /v1/users
 app.use("/v1/users", require("./routes/users.js"));
 app.use("/v1/auth", require("./routes/auth.js"));
+app.use("/v1/shops", require("./routes/shops.js"));
 
 // Execute schema.sql on server start
 if (process.env.RENDER) {
-
   executeSchemaSQL();
 }
 

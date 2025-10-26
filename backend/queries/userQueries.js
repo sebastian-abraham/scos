@@ -50,10 +50,10 @@ const findUserById = async (id) => {
   return rows[0]; // Return the first row (or undefined if not found)
 };
 
-const createNewUser = async (username, email) => {
+const createNewUser = async (firstname, lastname, email, role) => {
   const { rows } = await db.query(
-    "INSERT INTO users (username, email) VALUES ($1, $2) RETURNING *",
-    [username, email]
+    "INSERT INTO users (firstname, lastname, email, role) VALUES ($1, $2, $3, $4) RETURNING *",
+    [firstname, lastname, email, role]
   );
   return rows[0]; // Return the newly created user
 };
@@ -61,6 +61,18 @@ const createNewUser = async (username, email) => {
 const deleteUserById = async (id) => {
   const { rowCount } = await db.query("DELETE FROM users WHERE id = $1", [id]);
   return rowCount > 0;
+};
+
+// Update user by ID
+const updateUserById = async (id, fields) => {
+  const keys = Object.keys(fields);
+  if (keys.length === 0) return null;
+  const setClause = keys.map((k, i) => `${k} = $${i + 2}`).join(", ");
+  const values = [id, ...keys.map((k) => fields[k])];
+  const { rowCount } = await db.query(`UPDATE users SET ${setClause} WHERE id = $1`, values);
+  if (rowCount === 0) return null;
+  const { rows } = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+  return rows[0];
 };
 
 module.exports = {
@@ -71,7 +83,6 @@ module.exports = {
   findUserByEmail,
   createUser,
   updateUserFields,
+  updateUserById,
   deleteUserById,
 };
-
-// Delete user by ID

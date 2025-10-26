@@ -9,6 +9,8 @@ import { AuthProvider } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/NotFoundPage";
 import ManageUsers from "./pages/manager/ManageUsers";
+import CreateShop from "./pages/manager/CreateShop";
+import ManageShops from "./pages/manager/ManageShops";
 function App() {
   useEffect(() => {
     const enterImmersiveMode = async () => {
@@ -51,6 +53,22 @@ function App() {
             element={
               <ProtectedRoute requiredRole="manager">
                 <ManageUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager/shops"
+            element={
+              <ProtectedRoute requiredRole="manager">
+                <ManageShops />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager/shops/create"
+            element={
+              <ProtectedRoute requiredRole="manager">
+                <CreateShop />
               </ProtectedRoute>
             }
           />

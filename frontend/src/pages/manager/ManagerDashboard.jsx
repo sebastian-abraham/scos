@@ -6,21 +6,24 @@ import { useNavigate } from "react-router-dom";
 // Google Fonts and Material Symbols are expected to be loaded globally in index.html
 // Tailwind CSS config is expected to be set up in the project
 
-const stats = [
+import { useEffect, useState } from "react";
+import { getAuthHeaders } from "../../utils/auth";
+
+const defaultStats = [
   {
     label: "Total Shops",
     icon: "storefront",
-    value: 12,
+    value: 0,
   },
   {
     label: "Shopkeepers",
     icon: "group",
-    value: 25,
+    value: 0,
   },
   {
     label: "Total Students",
     icon: "school",
-    value: 850,
+    value: 0,
   },
   {
     label: "Today's Sales",
@@ -30,8 +33,57 @@ const stats = [
   },
 ];
 
-const ManagerDashboard = ({user}) => {
+const ManagerDashboard = ({ user }) => {
   const navigate = useNavigate();
+  const [stats, setStats] = useState(defaultStats);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const headers = await getAuthHeaders();
+        // Fetch users for shopkeeper/student counts
+        const usersRes = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/v1/users`,
+          { headers }
+        );
+        if (!usersRes.ok) throw new Error("Failed to fetch users");
+        const usersData = await usersRes.json();
+        let shopkeepers = 0;
+        let students = 0;
+        (Array.isArray(usersData) ? usersData : usersData.users || []).forEach(
+          (u) => {
+            const role = (u.role || "").toLowerCase();
+            if (role === "shopkeeper") shopkeepers++;
+            if (role === "student") students++;
+          }
+        );
+
+        // Fetch shops for total shop count
+        const shopsRes = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/v1/shops`,
+          { headers }
+        );
+        if (!shopsRes.ok) throw new Error("Failed to fetch shops");
+        const shopsData = await shopsRes.json();
+        // shopsData can be an array or { shops: [...] }
+        const shopsArr = Array.isArray(shopsData)
+          ? shopsData
+          : shopsData.shops || [];
+        const totalShops = shopsArr.length;
+
+        setStats((prev) =>
+          prev.map((s) => {
+            if (s.label === "Shopkeepers") return { ...s, value: shopkeepers };
+            if (s.label === "Total Students") return { ...s, value: students };
+            if (s.label === "Total Shops") return { ...s, value: totalShops };
+            return s;
+          })
+        );
+      } catch (e) {
+        // fallback: do not update stats
+      }
+    };
+    fetchStats();
+  }, []);
   return (
     <div className="relative flex min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark font-display text-text-primary-light dark:text-text-primary-dark">
       {/* Top App Bar */}
@@ -53,24 +105,27 @@ const ManagerDashboard = ({user}) => {
 
       {/* Navigation Tabs */}
       <div className="flex border-b border-gray-200 dark:border-gray-700 bg-card-light dark:bg-card-dark px-4 pt-2">
-        <a
-          className="border-b-2 border-primary px-4 py-3 text-sm font-semibold text-primary"
-          href="#"
+        <button
+          className="border-b-2 border-primary px-4 py-3 text-sm font-semibold text-primary focus:outline-none"
+          onClick={() => navigate("/manager/dashboard")}
+          type="button"
         >
           Dashboard
-        </a>
-        <a
-          className="border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary"
-          href="#"
+        </button>
+        <button
+          className="border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary focus:outline-none"
+          onClick={() => navigate("/manager/shops")}
+          type="button"
         >
           Shops
-        </a>
-        <a
-          className="border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary"
-          href="#"
+        </button>
+        <button
+          className="border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-primary focus:outline-none"
+          onClick={() => navigate("/manager/users")}
+          type="button"
         >
           Users
-        </a>
+        </button>
       </div>
 
       <main className="flex-1 p-4 md:p-6">
@@ -117,7 +172,10 @@ const ManagerDashboard = ({user}) => {
 
         {/* Quick Action Buttons */}
         <div className="flex flex-col gap-4">
-          <button className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg bg-primary px-6 py-4 text-base font-bold text-white shadow-sm transition-opacity hover:opacity-90">
+          <button
+            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg bg-primary px-6 py-4 text-base font-bold text-white shadow-sm transition-opacity hover:opacity-90"
+            onClick={() => navigate("/manager/shops")}
+          >
             <span className="material-symbols-outlined">add_business</span>
             <span>Add New Shop</span>
           </button>
