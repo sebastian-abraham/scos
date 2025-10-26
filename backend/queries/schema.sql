@@ -43,4 +43,4 @@ CREATE TABLE shops (
 );
 
 insert into users (uuid, email, firstname, lastname, role) values
-('', 'sebastianabraham2006@gmail.com', '', '', 'manager'),
+('', 'sebastianabraham2006@gmail.com', '', '', 'manager');
