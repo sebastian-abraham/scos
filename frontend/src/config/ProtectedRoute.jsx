@@ -9,8 +9,7 @@ import { AuthContext } from "../context/AuthContext";
  * @param {string|string[]} [props.requiredRole] - The required role(s) for this route (e.g., 'student', 'manager').
  */
 export default function ProtectedRoute({ children, requiredRole }) {
-  const { user, loading, role } = useContext(AuthContext);
-
+  const { user, loading } = useContext(AuthContext);
   if (loading) return null; // or a spinner
   if (!user) return <Navigate to="/login" replace />;
 
@@ -19,7 +18,7 @@ export default function ProtectedRoute({ children, requiredRole }) {
     const allowedRoles = Array.isArray(requiredRole)
       ? requiredRole
       : [requiredRole];
-    if (!allowedRoles.includes(role)) {
+    if (!allowedRoles.includes(user.role)) {
       // Optionally, redirect to a forbidden page or home
       return <Navigate to="/login" replace />;
     }
