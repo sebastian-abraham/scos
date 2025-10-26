@@ -1,15 +1,15 @@
 // routes/users.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const userController = require('../controllers/userController.js');
 
-// GET /api/users/
-router.get('/', userController.getAllUsers);
+const userController = require("../controllers/userController.js");
+const authenticateUser = require("../middleware/authMiddleware");
 
-// POST /api/users/
-router.post('/', userController.createUser);
+// Protect all user routes
 
-// GET /api/users/:id
-router.get('/:id', userController.getUserById);
+router.get("/", authenticateUser(), userController.getAllUsers);
+router.post("/", authenticateUser(), userController.createUser);
+router.get("/:id", authenticateUser(), userController.getUserById);
+router.delete("/:id", authenticateUser(), userController.deleteUserById);
 
 module.exports = router;

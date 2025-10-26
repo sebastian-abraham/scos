@@ -58,6 +58,11 @@ const createNewUser = async (username, email) => {
   return rows[0]; // Return the newly created user
 };
 
+const deleteUserById = async (id) => {
+  const { rowCount } = await db.query("DELETE FROM users WHERE id = $1", [id]);
+  return rowCount > 0;
+};
+
 module.exports = {
   findAllUsers,
   findUserById,
@@ -66,5 +71,7 @@ module.exports = {
   findUserByEmail,
   createUser,
   updateUserFields,
+  deleteUserById,
 };
-  
+
+// Delete user by ID

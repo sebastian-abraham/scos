@@ -1,9 +1,13 @@
 import { useAuth } from "../context/AuthContext";
-
+import ManagerDashboard from "./manager/ManagerDashboard";
 export default function Dashboard() {
   const { user } = useAuth();
 
   if (!user) return null;
+
+  if (user.role === "manager") {
+    return <ManagerDashboard user={user} />;
+  }
 
   return (
     <div style={{ padding: 32 }}>

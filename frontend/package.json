@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@boengli/capacitor-fullscreen": "^0.0.19",
+    "@capacitor-firebase/authentication": "^7.3.1",
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/cli": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
     "axios": "^1.12.2",
     "firebase": "^12.4.0",
     "react": "^19.1.1",

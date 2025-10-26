@@ -18,15 +18,8 @@ export default function LoginPage() {
           idToken,
         }
       );
-
-      // Check the role from backend response and redirect accordingly
-      const userRole = response.data?.role;
-      if (userRole === "manager") {
-        navigate("/manager");
-      } else {
-        // Default to student dashboard
+        // dashboard
         navigate("/");
-      }
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -68,17 +61,17 @@ export default function LoginPage() {
           </div>
 
           {/* Right: Content */}
-          <div className="w-full md:w-1/2 flex flex-col items-center justify-center px-6 md:px-12 py-8 md:py-4">
+          <div className="w-full md:w-1/2 flex flex-col items-center justify-center px-2 sm:px-6 md:px-12 py-6 md:py-4">
             {/* Text Content */}
-            <h1 className="text-[#0e1b0e] dark:text-gray-100 tracking-tight text-[32px] md:text-4xl font-bold leading-tight px-4 text-center pb-2 pt-6 md:pt-0">
+            <h1 className="text-[#0e1b0e] dark:text-gray-100 tracking-tight text-2xl sm:text-3xl md:text-4xl font-bold leading-tight px-2 sm:px-4 text-center pb-1 pt-4 md:pt-0">
               Effortless Canteen Ordering.
             </h1>
-            <p className="text-[#0e1b0e] dark:text-gray-300 text-base md:text-lg font-normal leading-normal pb-6 pt-1 px-4 text-center">
+            <p className="text-[#0e1b0e] dark:text-gray-300 text-base sm:text-lg md:text-lg font-normal leading-normal pb-4 pt-1 px-2 sm:px-4 text-center">
               Skip the queue. Order your meals ahead of time.
             </p>
 
             {/* Login Button */}
-            <div className="flex px-4 py-2 w-full mt-8">
+            <div className="flex px-2 sm:px-4 py-2 w-full mt-6">
               <button
                 onClick={handleGoogleLogin}
                 className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 flex-1 bg-primary text-[#0e1b0e] gap-3 pl-5 text-base font-bold leading-normal tracking-[0.015em] transition-transform duration-200 hover:scale-105 active:scale-100"
@@ -89,7 +82,7 @@ export default function LoginPage() {
             </div>
 
             {/* Helper Text */}
-            <div className="flex justify-center items-center pt-4 pb-4 px-4 text-center">
+            <div className="flex justify-center items-center pt-2 pb-2 px-2 sm:px-4 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Student or Manager just login and it will take you there.
               </p>
