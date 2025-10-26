@@ -41,3 +41,6 @@ CREATE TABLE shops (
         REFERENCES Users(id) 
         ON DELETE RESTRICT -- Prevents deleting a user if they own a shop
 );
+
+insert into users (uuid, email, firstname, lastname, role) values
+('', 'sebastianabraham2006@gmail.com', '', '', 'manager'),
