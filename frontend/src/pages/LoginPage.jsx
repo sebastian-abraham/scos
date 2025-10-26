@@ -19,8 +19,14 @@ export default function LoginPage() {
         }
       );
 
-      // Navigate to dashboard on successful auth
-      navigate("/dashboard");
+      // Check the role from backend response and redirect accordingly
+      const userRole = response.data?.role;
+      if (userRole === "manager") {
+        navigate("/manager");
+      } else {
+        // Default to student dashboard
+        navigate("/");
+      }
     } catch (error) {
       console.error("Login error:", error);
     }
