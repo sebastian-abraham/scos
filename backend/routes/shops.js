@@ -10,6 +10,9 @@ const authenticateUser = require("../middleware/authMiddleware");
 
 // Protect all shop routes
 router.get("/", authenticateUser(), shopController.getAllShops);
+
+// Serve shop image as raw bytes
+router.get("/:id/image", shopController.getShopImage);
 router.post(
   "/",
   authenticateUser(),

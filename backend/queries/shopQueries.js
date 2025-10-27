@@ -2,12 +2,47 @@
 const db = require("../config/db");
 
 const findAllShops = async () => {
-  const { rows } = await db.query("SELECT * FROM shops ORDER BY id ASC");
+  // Join shops with users to get shopkeeper details
+  const { rows } = await db.query(`
+    SELECT s.*, 
+           json_build_object(
+             'id', u.id,
+             'uuid', u.uuid,
+             'email', u.email,
+             'firstname', u.firstname,
+             'lastname', u.lastname,
+             'imageurl', u.imageurl,
+             'role', u.role,
+             'created_at', u.created_at
+           ) AS shopkeeper
+    FROM shops s
+    JOIN users u ON s.shopkeeper_id = u.id
+    ORDER BY s.id ASC
+  `);
   return rows;
 };
 
 const findShopById = async (id) => {
-  const { rows } = await db.query("SELECT * FROM shops WHERE id = $1", [id]);
+  // Join shops with users to get shopkeeper details
+  const { rows } = await db.query(
+    `
+    SELECT s.*, 
+           json_build_object(
+             'id', u.id,
+             'uuid', u.uuid,
+             'email', u.email,
+             'firstname', u.firstname,
+             'lastname', u.lastname,
+             'imageurl', u.imageurl,
+             'role', u.role,
+             'created_at', u.created_at
+           ) AS shopkeeper
+    FROM shops s
+    JOIN users u ON s.shopkeeper_id = u.id
+    WHERE s.id = $1
+  `,
+    [id]
+  );
   return rows[0];
 };
 

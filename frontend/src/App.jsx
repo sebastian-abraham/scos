@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 import { Fullscreen } from "@boengli/capacitor-fullscreen";
 
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./LoginPage";
 import ProtectedRoute from "./config/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";

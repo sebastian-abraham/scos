@@ -46,7 +46,13 @@ const createShop = async (req, res) => {
 const updateShopById = async (req, res) => {
   const { id } = req.params;
   try {
-    const updatedShop = await queries.updateShopById(id, req.body, req.file);
+    // Only include image if a new file is provided
+    let updateData = { ...req.body };
+    let file = undefined;
+    if (req.file) {
+      file = req.file;
+    }
+    const updatedShop = await queries.updateShopById(id, updateData, file);
     if (!updatedShop) {
       return res.status(404).json({ msg: "Shop not found" });
     }
@@ -75,4 +81,21 @@ module.exports = {
   createShop,
   updateShopById,
   deleteShopById,
+  // New export for image serving
+  getShopImage: async (req, res) => {
+    const { id } = req.params;
+    try {
+      // Fetch image and mime type from DB (assuming shopQueries has a suitable method)
+      const shop = await queries.findShopById(id);
+      if (!shop || !shop.shop_image) {
+        return res.status(404).json({ msg: "Image not found" });
+      }
+      // Default to jpeg if mime type not stored; adjust if you store mime type
+      const mimeType = shop.mime_type || "image/jpeg";
+      res.set("Content-Type", mimeType);
+      res.send(shop.shop_image);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
 };

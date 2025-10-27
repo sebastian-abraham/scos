@@ -1,5 +1,5 @@
 import { signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../config/firebase"; // Make sure this path is correct
+import { auth, provider } from "./config/firebase"; // Make sure this path is correct
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -18,8 +18,8 @@ export default function LoginPage() {
           idToken,
         }
       );
-        // dashboard
-        navigate("/");
+      // dashboard
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error);
     }
