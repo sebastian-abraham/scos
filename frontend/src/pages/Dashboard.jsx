@@ -1,5 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import ManagerDashboard from "./manager/ManagerDashboard";
+import ShopkeeperDashboard from "./shopkeeper/ShopkeeperDashboard";
+
 export default function Dashboard() {
   const { user } = useAuth();
 
@@ -7,6 +9,9 @@ export default function Dashboard() {
 
   if (user.role === "manager") {
     return <ManagerDashboard user={user} />;
+  }
+  if (user.role === "shopkeeper") {
+    return <ShopkeeperDashboard user={user} />;
   }
 
   return (

@@ -11,6 +11,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ManageUsers from "./pages/manager/ManageUsers";
 import CreateShop from "./pages/manager/CreateShop";
 import ManageShops from "./pages/manager/ManageShops";
+import ShopkeeperMenu from "./pages/shopkeeper/ShopkeeperMenu";
+import AddNewItem from "./pages/shopkeeper/AddNewItem";
 function App() {
   useEffect(() => {
     const enterImmersiveMode = async () => {
@@ -40,7 +42,9 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute requiredRole={["student", "manager"]}>
+              <ProtectedRoute
+                requiredRole={["student", "manager", "shopkeeper"]}
+              >
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -74,6 +78,23 @@ function App() {
           />
           {/* 404 Not Found route */}
           <Route path="*" element={<NotFoundPage />} />
+          {/* Shopkeeper-only menu route */}
+          <Route
+            path="/shopkeeper/menu"
+            element={
+              <ProtectedRoute requiredRole="shopkeeper">
+                <ShopkeeperMenu />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopkeeper/menu/add"
+            element={
+              <ProtectedRoute requiredRole="shopkeeper">
+                <AddNewItem />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </AuthProvider>
