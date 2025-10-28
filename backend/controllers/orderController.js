@@ -1,6 +1,17 @@
 // controllers/orderController.js
 const queries = require("../queries/orderQueries.js");
 
+// Get all orders for the authenticated user
+const getOrdersForCurrentUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const orders = await queries.findOrdersByStudentId(userId);
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const getAllOrders = async (req, res) => {
   try {
     const orders = await queries.findAllOrders();
@@ -64,4 +75,5 @@ module.exports = {
   createOrder,
   updateOrderById,
   deleteOrderById,
+  getOrdersForCurrentUser,
 };

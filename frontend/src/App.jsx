@@ -14,6 +14,7 @@ import ManageShops from "./pages/manager/ManageShops";
 import ShopkeeperMenu from "./pages/shopkeeper/ShopkeeperMenu";
 import AddNewItem from "./pages/shopkeeper/AddNewItem";
 import ShopMenu from "./pages/shops/ShopMenu";
+import CartPage from "./pages/shops/CartPage";
 import Profile from "./pages/Profile";
 {
   /* Profile page route for all authenticated users */
@@ -71,6 +72,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="student">
                 <ShopMenu />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <CartPage />
               </ProtectedRoute>
             }
           />

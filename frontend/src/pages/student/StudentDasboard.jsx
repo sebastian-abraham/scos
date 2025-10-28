@@ -126,10 +126,10 @@ export default function StudentDashboard() {
             <div className="text-center py-8">No canteens found.</div>
           ) : (
             shops.map((shop, idx) => {
-              const openTime = shop.open_time
+              const open_time = shop.open_time
                 ? shop.open_time.slice(0, 5)
                 : null;
-              const closeTime = shop.close_time
+              const close_time = shop.close_time
                 ? shop.close_time.slice(0, 5)
                 : null;
               const isDisabled = shop.is_active === false;
@@ -195,8 +195,8 @@ export default function StudentDashboard() {
                       <div className="flex items-end gap-3 justify-between">
                         <div className="flex flex-col gap-1">
                           <p className="text-gray-600 dark:text-gray-300 text-sm font-normal leading-normal">
-                            {openTime && closeTime
-                              ? `Hours: ${openTime} - ${closeTime}`
+                            {open_time && close_time
+                              ? `Hours: ${open_time} - ${close_time}`
                               : "Hours not specified"}
                           </p>
                           <p className="text-gray-600 dark:text-gray-300 text-sm font-normal leading-normal">

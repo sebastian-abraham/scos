@@ -295,6 +295,7 @@ export default function ShopMenu() {
           <button
             className="flex w-full cursor-pointer items-center justify-between overflow-hidden rounded-xl bg-primary h-14 px-5 text-black shadow-lg"
             disabled={cartCount === 0}
+            onClick={() => navigate("/cart")}
           >
             <div className="flex items-center gap-2">
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-black/10 text-sm font-bold">

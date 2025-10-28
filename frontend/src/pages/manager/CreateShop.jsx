@@ -8,8 +8,8 @@ const CreateShop = () => {
     name: "",
     location: "",
     image: null,
-    openTime: "09:00",
-    closeTime: "17:00",
+    open_time: "09:00",
+    close_time: "17:00",
     shopkeeperEmail: "",
   });
   const [shopkeepers, setShopkeepers] = useState([]);
@@ -79,8 +79,8 @@ const CreateShop = () => {
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("location", form.location);
-      formData.append("openTime", form.openTime);
-      formData.append("closeTime", form.closeTime);
+      formData.append("open_time", form.open_time);
+      formData.append("close_time", form.close_time);
       formData.append("shopkeeperEmail", form.shopkeeperEmail);
       if (form.image) {
         formData.append("image", form.image);
@@ -212,9 +212,9 @@ const CreateShop = () => {
               <div className="relative">
                 <input
                   className="form-input h-14 p-[15px] text-base font-normal leading-normal w-full"
-                  name="openTime"
+                  name="open_time"
                   type="time"
-                  value={form.openTime}
+                  value={form.open_time}
                   onChange={handleInput}
                   required
                 />
@@ -228,9 +228,9 @@ const CreateShop = () => {
               <div className="relative">
                 <input
                   className="form-input h-14 p-[15px] text-base font-normal leading-normal w-full"
-                  name="closeTime"
+                  name="close_time"
                   type="time"
-                  value={form.closeTime}
+                  value={form.close_time}
                   onChange={handleInput}
                   required
                 />

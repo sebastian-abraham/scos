@@ -46,12 +46,24 @@ const createShop = async (req, res) => {
 const updateShopById = async (req, res) => {
   const { id } = req.params;
   try {
-    // Only include image if a new file is provided
     let updateData = { ...req.body };
     let file = undefined;
+    // If shopkeeperEmail is provided, look up user and set shopkeeperId
+    if (updateData.shopkeeperEmail) {
+      const userQueries = require("../queries/userQueries.js");
+      const shopkeeper = await userQueries.findUserByEmail(
+        updateData.shopkeeperEmail
+      );
+      if (!shopkeeper) {
+        return res.status(400).json({ error: "Shopkeeper email not found" });
+      }
+      updateData.shopkeeper_id = shopkeeper.id;
+      delete updateData.shopkeeperEmail;
+    }
     if (req.file) {
       file = req.file;
     }
+    console.log("Updating shop with data:", updateData);
     const updatedShop = await queries.updateShopById(id, updateData, file);
     if (!updatedShop) {
       return res.status(404).json({ msg: "Shop not found" });

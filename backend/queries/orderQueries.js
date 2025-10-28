@@ -1,7 +1,6 @@
 // queries/orderQueries.js
 const db = require("../config/db");
 
-
 const findAllOrders = async () => {
   const { rows } = await db.query("SELECT * FROM orders ORDER BY id ASC");
   return rows;
@@ -57,4 +56,11 @@ module.exports = {
   updateOrderById,
   deleteOrderById,
   findPendingOrder,
+  findOrdersByStudentId: async (student_id) => {
+    const { rows } = await db.query(
+      "SELECT * FROM orders WHERE student_id = $1 ORDER BY created_at DESC",
+      [student_id]
+    );
+    return rows;
+  },
 };

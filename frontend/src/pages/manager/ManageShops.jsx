@@ -15,8 +15,8 @@ const ManageShops = () => {
     name: "",
     location: "",
     image: null,
-    openTime: "09:00",
-    closeTime: "17:00",
+    open_time: "09:00",
+    close_time: "17:00",
     shopkeeperEmail: "",
   });
   const [editImagePreview, setEditImagePreview] = useState(null);
@@ -113,8 +113,8 @@ const ManageShops = () => {
       name: shop.name || "",
       location: shop.location || "",
       image: null,
-      openTime: shop.open_time || shop.openTime || "09:00",
-      closeTime: shop.close_time || shop.closeTime || "17:00",
+      open_time: shop.open_time || shop.open_time || "09:00",
+      close_time: shop.close_time || shop.close_time || "17:00",
       shopkeeperEmail:
         (shop.shopkeeper && shop.shopkeeper.email) ||
         shop.shopkeeperEmail ||
@@ -173,8 +173,8 @@ const ManageShops = () => {
       name: "",
       location: "",
       image: null,
-      openTime: "09:00",
-      closeTime: "17:00",
+      open_time: "09:00",
+      close_time: "17:00",
       shopkeeperEmail: "",
     });
   };
@@ -188,8 +188,8 @@ const ManageShops = () => {
       const formData = new FormData();
       formData.append("name", editShopForm.name);
       formData.append("location", editShopForm.location);
-      formData.append("openTime", editShopForm.openTime);
-      formData.append("closeTime", editShopForm.closeTime);
+      formData.append("open_time", editShopForm.openTime);
+      formData.append("close_time", editShopForm.close_time);
       formData.append("shopkeeperEmail", editShopForm.shopkeeperEmail);
       if (editShopForm.image) {
         formData.append("image", editShopForm.image);
@@ -482,9 +482,9 @@ const ManageShops = () => {
                                   <div className="relative">
                                     <input
                                       className="form-input h-14 p-[15px] text-base font-normal leading-normal w-full"
-                                      name="openTime"
+                                      name="open_time"
                                       type="time"
-                                      value={editShopForm.openTime}
+                                      value={editShopForm.open_time}
                                       onChange={handleEditInput}
                                       required
                                     />
@@ -498,9 +498,9 @@ const ManageShops = () => {
                                   <div className="relative">
                                     <input
                                       className="form-input h-14 p-[15px] text-base font-normal leading-normal w-full"
-                                      name="closeTime"
+                                      name="close_time"
                                       type="time"
-                                      value={editShopForm.closeTime}
+                                      value={editShopForm.close_time}
                                       onChange={handleEditInput}
                                       required
                                     />

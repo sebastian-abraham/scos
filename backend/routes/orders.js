@@ -4,6 +4,8 @@ const router = express.Router();
 const orderController = require("../controllers/orderController.js");
 const authenticateUser = require("../middleware/authMiddleware");
 
+// Get all orders for the current authenticated user
+router.get("/my", authenticateUser(), orderController.getOrdersForCurrentUser);
 // Protect all order routes
 router.get("/", authenticateUser(), orderController.getAllOrders);
 router.post("/", authenticateUser(), orderController.createOrder);

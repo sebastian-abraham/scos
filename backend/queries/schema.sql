@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS items;
 -- User table schema
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    uuid VARCHAR(128) UNIQUE,
+    uuid VARCHAR(128),
     email VARCHAR(255) UNIQUE NOT NULL,
     firstname VARCHAR(50),
     lastname VARCHAR(50),
@@ -70,7 +70,7 @@ CREATE TABLE orders (
     student_id INT NOT NULL, 
     -- The shop the order was placed at
     shop_id INT NOT NULL, 
-    total_amount DECIMAL(10, 2) NOT NULL Default 0 CHECK (total_amount >= 0),
+    total_amount DECIMAL(10, 2) NOT NULL Default 0 CHECK (total_amount >= 0)    ,
     
     -- Using VARCHAR with a CHECK constraint is flexible
     order_status VARCHAR(50) NOT NULL DEFAULT 'Pending' 

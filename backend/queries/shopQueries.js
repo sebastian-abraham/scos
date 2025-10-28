@@ -50,8 +50,8 @@ const createShop = async (data, file) => {
   // Convert camelCase to snake_case for DB fields
   const name = data.name;
   const location = data.location;
-  const open_time = data.openTime;
-  const close_time = data.closeTime;
+  const open_time = data.open_time;
+  const close_time = data.close_time;
   const shopkeeper_id = data.shopkeeperId;
   const is_active = data.isActive !== undefined ? data.isActive : true;
   let shop_image = null;
