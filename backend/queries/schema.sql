@@ -56,7 +56,7 @@ CREATE TABLE items (
     -- For filters like 'Veg', 'Non-Veg', 'Spicy'
     tags TEXT[], 
     -- This is the "In Stock" toggle for the shopkeeper
-    quantity INT DEFAULT 0 CHECK (quantity_available >= 0), 
+    quantity INT DEFAULT 0 CHECK (quantity >= 0), 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- Links the item to its shop
     FOREIGN KEY (shop_id) 

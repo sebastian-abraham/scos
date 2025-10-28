@@ -1,3 +1,11 @@
+// Find an item by name and shop_id
+const findItemByNameAndShopId = async (name, shopId) => {
+  const { rows } = await db.query(
+    "SELECT * FROM items WHERE name = $1 AND shop_id = $2 LIMIT 1",
+    [name, shopId]
+  );
+  return rows[0];
+};
 const db = require("../config/db");
 
 // Get all items (optionally by shop)
@@ -55,4 +63,5 @@ module.exports = {
   createItem,
   updateItemById,
   deleteItemById,
+  findItemByNameAndShopId,
 };

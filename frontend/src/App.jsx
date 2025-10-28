@@ -13,6 +13,10 @@ import CreateShop from "./pages/manager/CreateShop";
 import ManageShops from "./pages/manager/ManageShops";
 import ShopkeeperMenu from "./pages/shopkeeper/ShopkeeperMenu";
 import AddNewItem from "./pages/shopkeeper/AddNewItem";
+import ShopMenu from "./pages/shops/ShopMenu";
+{
+  /* Student shop menu route */
+}
 function App() {
   useEffect(() => {
     const enterImmersiveMode = async () => {
@@ -37,7 +41,6 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
-
           {/* Student-only routes */}
           <Route
             path="/"
@@ -49,9 +52,15 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* Manager-only routes */}
-
+          <Route
+            path="/shops/:shopId"
+            element={
+              <ProtectedRoute requiredRole="student">
+                <ShopMenu />
+              </ProtectedRoute>
+            }
+          />
+          ;{/* Manager-only routes */}
           <Route
             path="/manager/users"
             element={
