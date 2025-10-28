@@ -1,9 +1,19 @@
 // queries/orderQueries.js
 const db = require("../config/db");
 
+
 const findAllOrders = async () => {
   const { rows } = await db.query("SELECT * FROM orders ORDER BY id ASC");
   return rows;
+};
+
+// Find a pending order for a student and shop
+const findPendingOrder = async (student_id, shop_id) => {
+  const { rows } = await db.query(
+    `SELECT * FROM orders WHERE student_id = $1 AND shop_id = $2 AND order_status = 'Pending' LIMIT 1`,
+    [student_id, shop_id]
+  );
+  return rows[0];
 };
 
 const findOrderById = async (id) => {
@@ -13,10 +23,10 @@ const findOrderById = async (id) => {
 
 const createOrder = async (data) => {
   // Example fields: user_id, shop_id, total, status
-  const { user_id, shop_id, total, status } = data;
+  const { student_id, shop_id, total_amount, order_status } = data;
   const { rows } = await db.query(
-    `INSERT INTO orders (user_id, shop_id, total, status) VALUES ($1, $2, $3, $4) RETURNING *`,
-    [user_id, shop_id, total, status]
+    `INSERT INTO orders (student_id, shop_id, total_amount, order_status) VALUES ($1, $2, $3, $4) RETURNING *`,
+    [student_id, shop_id, total_amount, order_status]
   );
   return rows[0];
 };
@@ -46,4 +56,5 @@ module.exports = {
   createOrder,
   updateOrderById,
   deleteOrderById,
+  findPendingOrder,
 };

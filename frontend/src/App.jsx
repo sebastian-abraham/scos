@@ -14,6 +14,10 @@ import ManageShops from "./pages/manager/ManageShops";
 import ShopkeeperMenu from "./pages/shopkeeper/ShopkeeperMenu";
 import AddNewItem from "./pages/shopkeeper/AddNewItem";
 import ShopMenu from "./pages/shops/ShopMenu";
+import Profile from "./pages/Profile";
+{
+  /* Profile page route for all authenticated users */
+}
 {
   /* Student shop menu route */
 }
@@ -49,6 +53,16 @@ function App() {
                 requiredRole={["student", "manager", "shopkeeper"]}
               >
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute
+                requiredRole={["student", "manager", "shopkeeper"]}
+              >
+                <Profile />
               </ProtectedRoute>
             }
           />

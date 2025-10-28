@@ -38,6 +38,7 @@ app.use("/v1/auth", require("./routes/auth.js"));
 app.use("/v1/shops", require("./routes/shops.js"));
 app.use("/v1/items", require("./routes/items.js"));
 app.use("/v1/orders", require("./routes/orders.js"));
+app.use("/v1/cart", require("./routes/cart.js"));
 
 // Execute schema.sql on server start
 if (process.env.RENDER) {

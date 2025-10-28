@@ -70,14 +70,14 @@ CREATE TABLE orders (
     student_id INT NOT NULL, 
     -- The shop the order was placed at
     shop_id INT NOT NULL, 
-    total_amount DECIMAL(10, 2) NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL Default 0 CHECK (total_amount >= 0),
     
     -- Using VARCHAR with a CHECK constraint is flexible
     order_status VARCHAR(50) NOT NULL DEFAULT 'Pending' 
         CHECK (order_status IN (
             'Pending', 
-            'In Progress', 
-            'Ready for Pickup', 
+            'Progress', 
+            'Ready', 
             'Completed', 
             'Cancelled'
         )),
@@ -114,4 +114,4 @@ CREATE TABLE order_items (
 -- Insert initial data
 INSERT INTO users (uuid, email, firstname, lastname, role) VALUES
 ('', 'sebastianabraham2006@gmail.com', '', '', 'manager'),
-('', '@gmail.com', '', '', 'manager');
+('', 'sejithrnath@gmail.com', '', '', 'manager');

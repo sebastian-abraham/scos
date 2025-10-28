@@ -22,6 +22,8 @@ export default function LoginPage() {
       navigate("/");
     } catch (error) {
       console.error("Login error:", error);
+      const data = await response.json();
+      console.error("Backend error response:", data);
     }
   };
 

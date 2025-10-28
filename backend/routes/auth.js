@@ -92,6 +92,7 @@ router.post("/", async (req, res) => {
         lastName: user.lastname || "",
         imageUrl: user.imageurl || "https://via.placeholder.com/150",
         uuid: user.uuid,
+        id: user.id,
       },
     });
   } catch (error) {

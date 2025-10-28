@@ -132,18 +132,31 @@ export default function StudentDashboard() {
               const closeTime = shop.close_time
                 ? shop.close_time.slice(0, 5)
                 : null;
+              const isDisabled = shop.is_active === false;
+              const cardClass =
+                "px-4 @container" +
+                (isDisabled
+                  ? " opacity-50 pointer-events-none select-none cursor-not-allowed"
+                  : " cursor-pointer");
               return (
                 <div
-                  className="px-4 @container cursor-pointer"
+                  className={cardClass}
                   key={shop.id || idx}
-                  onClick={() => navigate(`/shops/${shop.id}`)}
-                  tabIndex={0}
+                  onClick={
+                    isDisabled ? undefined : () => navigate(`/shops/${shop.id}`)
+                  }
+                  tabIndex={isDisabled ? -1 : 0}
                   role="button"
                   aria-label={`View menu for ${shop.name}`}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ")
-                      navigate(`/shops/${shop.id}`);
-                  }}
+                  onKeyDown={
+                    isDisabled
+                      ? undefined
+                      : (e) => {
+                          if (e.key === "Enter" || e.key === " ")
+                            navigate(`/shops/${shop.id}`);
+                        }
+                  }
+                  aria-disabled={isDisabled}
                 >
                   <div className="flex flex-col items-stretch justify-start rounded-xl overflow-hidden shadow-[0_0_12px_rgba(0,0,0,0.07)] bg-white dark:bg-gray-800">
                     <div
@@ -158,11 +171,24 @@ export default function StudentDashboard() {
                       data-alt={shop.name}
                     ></div>
                     <div className="flex w-full grow flex-col items-stretch justify-center gap-2 p-4">
-                      <p className="text-primary text-sm font-medium leading-normal">
-                        {shop.location
-                          ? shop.location
-                          : "Location not specified"}
-                      </p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span
+                          className={`inline-block h-2 w-2 rounded-full ${
+                            shop.is_active !== false
+                              ? "bg-primary"
+                              : "bg-gray-400"
+                          }`}
+                        ></span>
+                        <span
+                          className={`text-xs font-semibold ${
+                            shop.is_active !== false
+                              ? "text-primary dark:text-primary"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {shop.is_active !== false ? "Active" : "Inactive"}
+                        </span>
+                      </div>
                       <p className="text-[#0e1b0e] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">
                         {shop.name}
                       </p>
@@ -174,9 +200,9 @@ export default function StudentDashboard() {
                               : "Hours not specified"}
                           </p>
                           <p className="text-gray-600 dark:text-gray-300 text-sm font-normal leading-normal">
-                            {shop.cuisine
-                              ? shop.cuisine
-                              : "Western, Asian, Halal"}
+                            {shop.location
+                              ? shop.location
+                              : "Location not specified"}
                           </p>
                         </div>
                       </div>
